@@ -8,6 +8,7 @@
     "start": "dotenvx node dist/server.js",
     "dev": "ts-node-dev src/server.ts",
     "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
