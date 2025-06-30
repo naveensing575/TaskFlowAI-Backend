@@ -1,11 +1,11 @@
-import Task, { ITask } from '../models/Task';
+import Task, { ITask } from '../models/Task'
 
 export const createTask = async (
   title: string,
   description: string,
   status: string,
   dueDate: Date | undefined,
-  createdBy: string
+  createdBy: string,
 ): Promise<ITask> => {
   const task = await Task.create({
     title,
@@ -13,34 +13,34 @@ export const createTask = async (
     status,
     dueDate,
     createdBy,
-  });
-  return task;
-};
+  })
+  return task
+}
 
 export const getTasksByUser = async (userId: string): Promise<ITask[]> => {
-  return Task.find({ createdBy: userId });
-};
+  return Task.find({ createdBy: userId })
+}
 
 export const updateTask = async (
   taskId: string,
   userId: string,
-  updates: Partial<ITask>
+  updates: Partial<ITask>,
 ): Promise<ITask | null> => {
+  const task = await Task.findById(taskId)
+  if (!task) throw new Error('Task not found')
+  if (task.createdBy.toString() !== userId)
+    throw new Error('Not authorized brotherrrrr')
 
-  const task = await Task.findById(taskId);
-  if (!task) throw new Error('Task not found');
-  if (task.createdBy.toString() !== userId) throw new Error('Not authorized brotherrrrr');
-
-  return Task.findByIdAndUpdate(taskId, updates, { new: true });
-};
+  return Task.findByIdAndUpdate(taskId, updates, { new: true })
+}
 
 export const deleteTask = async (
   taskId: string,
-  userId: string
+  userId: string,
 ): Promise<void> => {
-  const task = await Task.findById(taskId);
-  if (!task) throw new Error('Task not found');
-  if (task.createdBy.toString() !== userId) throw new Error('Not authorized');
+  const task = await Task.findById(taskId)
+  if (!task) throw new Error('Task not found')
+  if (task.createdBy.toString() !== userId) throw new Error('Not authorized')
 
-  await task.deleteOne();
-};
+  await task.deleteOne()
+}

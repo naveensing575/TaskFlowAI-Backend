@@ -1,23 +1,21 @@
-import { Router } from 'express';
+import { Router } from 'express'
 import {
   createTask,
   getTasks,
   updateTask,
   deleteTask,
-} from '../controllers/taskController';
-import { protect } from '../middlewares/authMiddleware';
+} from '../controllers/taskController'
+import { protect } from '../middlewares/authMiddleware'
 
-const router = Router();
+const router = Router()
 
 // Create task & get all tasks
-router.route('/')
-  .post(protect, createTask)
-  .get(protect, getTasks);
+router.route('/').post(protect, createTask).get(protect, getTasks)
 
 // Update task
-router.put('/:id', protect, updateTask);
+router.put('/:id', protect, updateTask)
 
 // Delete task
-router.delete('/:id', protect, deleteTask);
+router.delete('/:id', protect, deleteTask)
 
-export default router;
+export default router

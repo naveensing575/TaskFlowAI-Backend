@@ -1,4 +1,4 @@
-import { protect } from './../middlewares/authMiddleware';
+import { protect } from './../middlewares/authMiddleware'
 import { Router } from 'express'
 import { loginUser, registerUser } from '../controllers/authController'
 

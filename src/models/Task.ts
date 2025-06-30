@@ -1,26 +1,26 @@
-import mongoose, {Schema, Document} from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose'
 
 export interface ITask extends Document {
-  title: string,
-  description: string,
-  status: 'todo' | 'in-progres' | 'done',
-  dueDate: Date,
+  title: string
+  description: string
+  status: 'todo' | 'in-progres' | 'done'
+  dueDate: Date
   createdBy: mongoose.Types.ObjectId
 }
 
 const taskSchema = new Schema<ITask>(
   {
-    title:{
-      type: String, 
-      required: true 
-    },
-    description:{
-      type: String
-    },
-    status:{
+    title: {
       type: String,
       required: true,
-      enum: ['todo','in-progress','done'],
+    },
+    description: {
+      type: String,
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: ['todo', 'in-progress', 'done'],
       default: 'todo',
     },
     dueDate: { type: Date },
@@ -30,7 +30,7 @@ const taskSchema = new Schema<ITask>(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 )
 
 export default mongoose.model<ITask>('Task', taskSchema)

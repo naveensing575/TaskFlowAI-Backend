@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import User, { IUser } from '../models/User';
+import User, { IUser } from '../models/User'
 import { generateToken } from '../utils/generateToken'
 
 export const register = async (
