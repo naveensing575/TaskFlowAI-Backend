@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use('/api/auth', authRoutes)
-app.use('/api/task', taskRoutes)
+app.use('/api/tasks', taskRoutes)
 app.use(errorHandler)
 
 app.get('/', (_req, res) => {
