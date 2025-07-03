@@ -26,7 +26,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body
 
   if (!email || !password) {
-    res.status(400).json({ messgae: 'Please add all fields' })
+    res.status(400).json({ message: 'Please add all fields' })
     return
   }
 
@@ -40,3 +40,12 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     token,
   })
 })
+
+export const getMe = (req: any, res: Response) => {
+  const user = req.user;
+  res.status(200).json({
+    _id: user.id,
+    name: user.name,
+    email: user.email,
+  });
+};
