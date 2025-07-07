@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
 import User from '../models/User'
+import { JWT_SECRET } from '../config/envConfig'
 
 interface CustomRequest extends Request {
   user?: any
@@ -20,7 +21,7 @@ export const protect = async (
     try {
       token = req.headers.authorization.split(' ')[1]
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || '') as {
+      const decoded = jwt.verify(token, JWT_SECRET || '') as {
         id: string
       }
 
