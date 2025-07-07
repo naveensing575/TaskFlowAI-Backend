@@ -10,6 +10,9 @@ export const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY as string;
 
+export const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY as string;
+
+
 if (!MONGO_URI) {
   throw new Error('MONGO_URI is not defined in environment variables.');
 }

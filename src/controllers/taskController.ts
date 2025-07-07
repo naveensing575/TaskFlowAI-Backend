@@ -1,6 +1,7 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import * as taskService from '../services/taskService'
 import asyncHandler from 'express-async-handler'
+import Task from '../models/Task'
 interface CustomRequest extends Request {
   user?: any
 }
@@ -57,3 +58,37 @@ export const deleteTask = asyncHandler(
     }
   },
 )
+
+export const breakdownTask = async (req: Request, res: Response, next: NextFunction) => {
+  const { taskId } = req.params;
+
+  try {
+    const task = await Task.findById(taskId);
+    if (!task) {
+      res.status(404).json({ message: 'Task not found.' });
+      return;
+    }
+
+    const subtasks = await taskService.generateTaskBreakdown(task.description);
+
+    task.subTasks = subtasks;
+
+    // ✅ Ensure status is valid
+    if (!['todo', 'in-progress', 'done'].includes(task.status)) {
+      console.warn(`Invalid status: ${task.status} — fixing to "todo"`);
+      task.status = 'todo';
+    }
+
+    console.log('Before save =>', {
+      status: task.status,
+      subTasks: task.subTasks
+    });
+
+    await task.save();
+
+    res.status(200).json({ subTasks: task.subTasks });
+  } catch (err) {
+    next(err);
+  }
+};
+
