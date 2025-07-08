@@ -3,15 +3,19 @@ import { Request, Response, NextFunction } from 'express'
 import User from '../models/User'
 import { JWT_SECRET } from '../config/envConfig'
 
-interface CustomRequest extends Request {
-  user?: any
+interface DecodedToken {
+  id: string
+}
+
+interface AuthenticatedRequest extends Request {
+  user?: any 
 }
 
 export const protect = async (
-  req: CustomRequest,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<any> => {
   let token
 
   if (
@@ -21,15 +25,16 @@ export const protect = async (
     try {
       token = req.headers.authorization.split(' ')[1]
 
-      const decoded = jwt.verify(token, JWT_SECRET || '') as {
-        id: string
+      if (!JWT_SECRET) {
+        throw new Error('JWT_SECRET not defined')
       }
+
+      const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken
 
       req.user = await User.findById(decoded.id).select('-password')
 
       if (!req.user) {
-        res.status(401).json({ message: 'User not found' })
-        return
+        return res.status(401).json({ message: 'User not found' })
       }
 
       next()
