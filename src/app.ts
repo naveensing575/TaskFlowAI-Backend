@@ -4,6 +4,7 @@ import taskRoutes from './routes/taskRoutes'
 import { errorHandler } from './middlewares/errorMiddleware'
 import morgan from 'morgan';
 import cors from 'cors';
+import adminRoutes from './routes/adminRoutes';
 
 const app = express()
 
@@ -27,6 +28,7 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/tasks', taskRoutes)
+app.use('/api/users', adminRoutes)
 app.use(errorHandler)
 
 app.get('/', (_req, res) => {

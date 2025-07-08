@@ -8,8 +8,6 @@ export const MONGO_URI = process.env.MONGO_URI as string;
 
 export const JWT_SECRET = process.env.JWT_SECRET as string;
 
-export const OPENAI_API_KEY = process.env.OPENAI_API_KEY as string;
-
 export const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY as string;
 
 
@@ -21,6 +19,6 @@ if (!JWT_SECRET) {
   throw new Error('JWT_SECRET is not defined in environment variables.');
 }
 
-if (!OPENAI_API_KEY) {
-  console.warn('OPENAI_API_KEY is not defined. AI Task Breakdown will not work.');
+if (!OPENROUTER_API_KEY) {
+  console.warn('OPENROUTER_API_KEY is not defined. AI Task Breakdown will not work.');
 }
