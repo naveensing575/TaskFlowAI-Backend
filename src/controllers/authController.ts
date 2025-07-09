@@ -47,5 +47,6 @@ export const getMe = (req: any, res: Response) => {
     _id: user.id,
     name: user.name,
     email: user.email,
+    role: user.role
   });
 };
