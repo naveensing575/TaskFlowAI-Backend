@@ -30,18 +30,19 @@ export const login = async (
   email: string,
   password: string,
 ): Promise<{ user: IUser; token: string }> => {
-  const user = await User.findOne({ email })
+  const user = await User.findOne({ email });
 
   if (!user) {
-    throw new Error('Invalid Credentials')
+    throw new Error('User not found. Please register first.');
   }
 
-  const isMatch = await bcrypt.compare(password, user.password)
+  const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error("Password doesn't match!")
+    throw new Error('Incorrect password. Please try again.');
   }
 
-  const token = generateToken(user.id)
+  const token = generateToken(user.id);
 
-  return { user, token }
-}
+  return { user, token };
+};
+

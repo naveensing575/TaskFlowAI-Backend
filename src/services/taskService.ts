@@ -68,7 +68,7 @@ export const generateTaskBreakdown = async (taskDescription: string) => {
       {
         headers: {
           Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-          'HTTP-Referer': 'http://localhost:5000', // Replace with your domain while deploying
+          'HTTP-Referer': 'http://localhost:5000', // Replace with domain while deploying
           'X-Title': 'TaskFlowAI',
           'Content-Type': 'application/json',
         },
@@ -81,11 +81,9 @@ export const generateTaskBreakdown = async (taskDescription: string) => {
     let subTasks: string[] = [];
 
     try {
-      // Try direct parse first
       subTasks = JSON.parse(aiContent);
     } catch {
       console.warn('Direct JSON.parse failed. Trying fallback extraction...');
-      // Fallback: grab first [ ... ]
       const match = aiContent.match(/\[([\s\S]*?)\]/);
       if (match) {
         const jsonArray = `[${match[1]}]`;
@@ -95,7 +93,6 @@ export const generateTaskBreakdown = async (taskDescription: string) => {
       }
     }
 
-    // ✅ Final sanity check — ensure all elements are strings
     if (!Array.isArray(subTasks) || !subTasks.every(item => typeof item === 'string')) {
       throw new Error('AI output is not a valid array of strings.');
     }
