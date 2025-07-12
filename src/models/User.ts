@@ -5,7 +5,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: 'user' | 'admin';
-  profileImage?: string; // ✅ added for Supabase Storage
+  profileImage?: string;
 }
 
 const userSchema = new Schema<IUser>({
