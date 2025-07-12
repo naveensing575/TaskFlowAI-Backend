@@ -1,10 +1,11 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IUser extends Document {
-  name: string
-  email: string
-  password: string
-  role: 'user' | 'admin'
+  name: string;
+  email: string;
+  password: string;
+  role: 'user' | 'admin';
+  profileImage?: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -27,6 +28,10 @@ const userSchema = new Schema<IUser>({
     enum: ['user', 'admin'],
     default: 'user',
   },
-})
+  profileImage: {
+    type: String,
+    default: 'https://your-supabase-url.supabase.co/storage/v1/object/public/avatars/default.png',
+  },
+});
 
-export default mongoose.model<IUser>('User', userSchema)
+export default mongoose.model<IUser>('User', userSchema);
