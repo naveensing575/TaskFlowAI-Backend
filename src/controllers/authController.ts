@@ -66,7 +66,6 @@ export const updateProfile = [
     const { name, email, password } = req.body;
 
     const user = await User.findById(userId);
-
     if (!user) {
       res.status(404).json({ message: 'User not found' });
       return;
@@ -82,26 +81,31 @@ export const updateProfile = [
 
     if (req.file) {
       const fileExt = req.file.originalname.split('.').pop();
-      const fileName = `avatars/${userId}.${fileExt}`;
+      const fileName = `avatars/${userId}-${Date.now()}.${fileExt}`;
 
-      const { error } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, req.file.buffer, {
           upsert: true,
           contentType: req.file.mimetype,
         });
 
-      if (error) {
-        res.status(500).json({ message: error.message });
+      if (uploadError) {
+        res.status(500).json({ message: uploadError.message });
         return;
       }
 
-      const { data: publicUrl } = supabase
+      const { data: publicUrlData } = supabase
         .storage
         .from('avatars')
         .getPublicUrl(fileName);
 
-      user.profileImage = publicUrl.publicUrl;
+      if (!publicUrlData || !publicUrlData.publicUrl) {
+        res.status(500).json({ message: 'Failed to generate public URL' });
+        return;
+      }
+
+      user.profileImage = publicUrlData.publicUrl;
     }
 
     await user.save();
