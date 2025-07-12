@@ -5,7 +5,8 @@ import { generateToken } from '../utils/generateToken';
 export const register = async (
   name: string,
   email: string,
-  password: string
+  password: string,
+  profileImage?: string
 ): Promise<{ user: IUser; token: string }> => {
   const userExists = await User.findOne({ email });
   if (userExists) {
@@ -19,6 +20,7 @@ export const register = async (
     name,
     email,
     password: hashedPassword,
+    profileImage: profileImage || undefined,
   });
 
   const token = generateToken(user.id);

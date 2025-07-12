@@ -3,26 +3,59 @@ import * as authService from '../services/authService';
 import asyncHandler from 'express-async-handler';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
+import supabase from '../utils/supabase';
+import multer from 'multer';
 
-export const registerUser = asyncHandler(async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+const upload = multer({ storage: multer.memoryStorage() });
 
-  if (!name || !email || !password) {
-    res.status(400).json({ message: 'Please add all fields' });
-    return;
-  }
+export const registerUser = [
+  upload.single('avatar'),
+  asyncHandler(async (req: any, res: Response) => {
+    const { name, email, password } = req.body;
 
-  const { user, token } = await authService.register(name, email, password);
+    if (!name || !email || !password) {
+      res.status(400).json({ message: 'Please add all fields' });
+      return;
+    }
 
-  res.status(201).json({
-    _id: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    profileImage: user.profileImage,
-    token,
-  });
-});
+    let profileImage;
+    if (req.file) {
+      const fileExt = req.file.originalname.split('.').pop();
+      const fileName = `avatars/${Date.now()}.${fileExt}`;
+      const { error } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, req.file.buffer, {
+          upsert: true,
+          contentType: req.file.mimetype,
+        });
+
+      if (error) throw new Error(error.message);
+
+      const { data: publicUrl } = supabase
+        .storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      profileImage = publicUrl.publicUrl;
+    }
+
+    const { user, token } = await authService.register(
+      name,
+      email,
+      password,
+      profileImage
+    );
+
+    res.status(201).json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      profileImage: user.profileImage,
+      token,
+    });
+  }),
+];
 
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
